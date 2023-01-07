@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import messagebox
+
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -6,21 +8,37 @@ from tkinter import *
 
 
 def save_password():
+    website = entry_website.get()
+    username = entry_username.get()
+    password = entry_password.get()
 
-    password_data = f"{entry_website.get()} | {entry_username.get()} | {entry_password.get()}\n"
+    if website != "" and username != "" and password != "":
+        confirmation_to_save = messagebox.askokcancel(title=website, message=f"These are the details entered: "
+                                                                             f"\n-> Email: {username} \n-> Password:"
+                                                                             f" {password}\nIs it ok to save?")
+        if confirmation_to_save:
+            password_data = f"{website} | {username} | {password}\n"
 
-    with open("data.txt", "a") as passwords:
-        passwords.write(password_data)
+            with open("data.txt", "a") as passwords:
+                passwords.write(password_data)
 
-    entry_website.delete(0, END)
-    entry_username.delete(0, END)
-    entry_password.delete(0, END)
+            entry_website.delete(0, END)
+            entry_username.delete(0, END)
+            entry_password.delete(0, END)
+
+            messagebox.showinfo(title="Congratulations!", message="Your password info has been saved")
+
+        else:
+            messagebox.showinfo(title="Cancelled", message="You has discarded this info :'D")
+
+    else:
+        messagebox.showinfo(title="Oops", message="Please don't let any field empty!")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
-window = Tk()
-window.title("Password Manager")
-window.config(padx=20, pady=20)
+main_window = Tk()
+main_window.title("Password Manager")
+main_window.config(padx=20, pady=20)
 
 canvas = Canvas(width=200, height=200)
 bg_photo = PhotoImage(file="logo.png")
@@ -53,4 +71,4 @@ btn_generate_pass.grid(column=1, row=4, columnspan=2)
 btn_add = Button(text="Add", width=25, command=save_password)
 btn_add.grid(column=1, row=5, columnspan=2)
 
-window.mainloop()
+main_window.mainloop()
