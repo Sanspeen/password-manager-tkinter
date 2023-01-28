@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-
+import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -50,10 +50,22 @@ def save_password():
                                                                              f"\n-> Email: {username} \n-> Password:"
                                                                              f" {password}\nIs it ok to save?")
         if confirmation_to_save:
-            password_data = f"{website} | {username} | {password}\n"
+            new_data = {
+                website:{
+                    "email": username,
+                    "password": password
+                }
+            }
+            with open("data.json", "r") as passwords:
+                # Reading old data
+                data = json.load(passwords)
 
-            with open("data.txt", "a") as passwords:
-                passwords.write(password_data)
+                # Updating old data
+                data.update(new_data)
+
+            with open("data.json", "w") as passwords:
+                # Saving updated data
+                json.dump(data, passwords, indent=4)
 
             entry_website.delete(0, END)
             entry_username.delete(0, END)
@@ -105,3 +117,4 @@ btn_add = Button(text="Add", width=25, command=save_password)
 btn_add.grid(column=1, row=5, columnspan=2)
 
 main_window.mainloop()
+
