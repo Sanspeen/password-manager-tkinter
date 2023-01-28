@@ -1,8 +1,13 @@
 from tkinter import *
 from tkinter import messagebox
 import json
-
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+DATABASE_DOCUMENT_NAME = "data.json"
+
+
+def search_password():
+    website = entry_website.get()
+
 
 def password_generator():
     # Password Generator Project
@@ -56,22 +61,27 @@ def save_password():
                     "password": password
                 }
             }
-            with open("data.json", "r") as passwords:
-                # Reading old data
-                data = json.load(passwords)
+            try:
+                with open(DATABASE_DOCUMENT_NAME, "r") as passwords:
+                    # Reading old data
+                    data = json.load(passwords)
+                    # Updating old data
+                    data.update(new_data)
 
-                # Updating old data
-                data.update(new_data)
+            except FileNotFoundError:
+                with open(DATABASE_DOCUMENT_NAME, "w") as passwords:
+                    json.dump(new_data, passwords, indent=4)
 
-            with open("data.json", "w") as passwords:
-                # Saving updated data
-                json.dump(data, passwords, indent=4)
+            else:
+                with open(DATABASE_DOCUMENT_NAME, "w") as passwords:
+                    # Saving updated data
+                    json.dump(data, passwords, indent=4)
 
-            entry_website.delete(0, END)
-            entry_username.delete(0, END)
-            entry_password.delete(0, END)
-
-            messagebox.showinfo(title="Congratulations!", message="Your password info has been saved")
+            finally:
+                entry_website.delete(0, END)
+                entry_username.delete(0, END)
+                entry_password.delete(0, END)
+                messagebox.showinfo(title="Congratulations!", message="Your password info has been saved")
 
         else:
             messagebox.showinfo(title="Cancelled", message="You has discarded this info :'D")
@@ -115,6 +125,9 @@ btn_generate_pass.grid(column=1, row=4, columnspan=2)
 
 btn_add = Button(text="Add", width=25, command=save_password)
 btn_add.grid(column=1, row=5, columnspan=2)
+
+btn_search = Button(text="Search", width=10, command=search_password)
+btn_search.grid(column=3, row=1)
 
 main_window.mainloop()
 
