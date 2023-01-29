@@ -7,11 +7,19 @@ DATABASE_DOCUMENT_NAME = "data.json"
 
 def search_password():
     website = entry_website.get().lower()
-    with open(DATABASE_DOCUMENT_NAME, "r") as data:
-        passwords = json.load(data)
-        email = passwords[website]["email"]
-        password = passwords[website]["password"]
-        messagebox.showinfo(title="Your info", message=f"Website: {website}\n Username: {email}\nPassword: {password}")
+    try:
+        with open(DATABASE_DOCUMENT_NAME, "r") as data:
+            passwords = json.load(data)
+            email = passwords[website]["email"]
+            password = passwords[website]["password"]
+            messagebox.showinfo(title="Your info", message=f"Website: {website}\n Username: {email}\nPassword: {password}")
+
+    except FileNotFoundError:
+        pass
+
+    except KeyError:
+        messagebox.showinfo(title="Missing information", message=f"This website doesn't exist.")
+
 
 def password_generator():
     # Password Generator Project
